@@ -5,6 +5,7 @@ import usersAvatarExample from '../assets/users-avatar-example.png'
 import iconCheck from '../assets/icon-check.svg'
 import { api } from '../lib/axios'
 import { FormEvent, useState } from 'react'
+import { GetStaticProps } from 'next'
 
 interface HomePros {
   pollCount: number;
@@ -83,7 +84,7 @@ export default function Home(props: HomePros) {
   )
 }
 
-export const getServerSideProps = async () => {
+export const getStaticProps: GetStaticProps = async () => {
   const [pollCountResponse, guessCountResponse, userCountResponse] = await Promise.all([
     api.get('polls/count'),
     api.get('guesses/count'),
@@ -95,6 +96,8 @@ export const getServerSideProps = async () => {
       pollCount: pollCountResponse.data.count,
       guessCount: guessCountResponse.data.count,
       userCount: userCountResponse.data.count,
-    }
+    },
+
+    revalidate: 5 * 60
   }
 }
